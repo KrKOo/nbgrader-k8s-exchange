@@ -15,8 +15,7 @@ class ExchangeFetchFeedback(Exchange, ABCExchangeFetchFeedback):
             self.fail("No course id specified. Re-run with --course flag.")
 
         self.course_path = os.path.join(self.root, self.coursedir.course_id)
-        self.outbound_path = os.path.join(self.course_path, 'feedback')
-        self.src_path = os.path.join(self.outbound_path)
+        
         self.cache_path = os.path.join(self.cache, self.coursedir.course_id)
 
         if self.coursedir.student_id != '*':
@@ -26,6 +25,9 @@ class ExchangeFetchFeedback(Exchange, ABCExchangeFetchFeedback):
             student_id = self.coursedir.student_id
         else:
             student_id = get_username()
+        
+        self.outbound_path = os.path.join(self.course_path, 'feedback_public', student_id)
+        self.src_path = os.path.join(self.outbound_path)
 
         if not os.path.isdir(self.src_path):
             self._assignment_not_found(

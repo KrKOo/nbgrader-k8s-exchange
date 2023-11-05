@@ -21,8 +21,9 @@ class ExchangeReleaseFeedback(Exchange, ABCExchangeReleaseFeedback):
         if self.coursedir.course_id == '':
             self.fail("No course id specified. Re-run with --course flag.")
 
+        student_id = self.coursedir.student_id
         self.course_path = os.path.join(self.root, self.coursedir.course_id)
-        self.outbound_feedback_path = os.path.join(self.course_path, 'feedback')
+        self.outbound_feedback_path = os.path.join(self.course_path, "feedback_public", student_id)
         self.dest_path = os.path.join(self.outbound_feedback_path)
         # 0755
         self.ensure_directory(
