@@ -21,9 +21,8 @@ class ExchangeReleaseFeedback(Exchange, ABCExchangeReleaseFeedback):
         if self.coursedir.course_id == '':
             self.fail("No course id specified. Re-run with --course flag.")
 
-        student_id = self.coursedir.student_id
         self.course_path = os.path.join(self.root, self.coursedir.course_id)
-        self.outbound_feedback_path = os.path.join(self.course_path, "feedback_public", student_id)
+        self.outbound_feedback_path = os.path.join(self.course_path, "feedback_public")
         self.dest_path = os.path.join(self.outbound_feedback_path)
         # 0755
         self.ensure_directory(
@@ -77,7 +76,12 @@ class ExchangeReleaseFeedback(Exchange, ABCExchangeReleaseFeedback):
 
             self.log.debug("Unique key is: {}".format(unique_key))
             checksum = notebook_hash(nbfile, unique_key)
-            dest = os.path.join(self.dest_path, "{}.html".format(checksum))
+            dest = os.path.join(self.dest_path, student_id, "{}.html".format(checksum))
+            self.ensure_directory(
+                dest,
+                (S_IRUSR | S_IWUSR | S_IXUSR | S_IXGRP | S_IXOTH |
+                ((S_IRGRP|S_IWGRP|S_ISGID) if self.coursedir.groupshared else 0))
+            )
 
             self.log.info("Releasing feedback for student '{}' on assignment '{}/{}/{}' ({})".format(
                 student_id, self.coursedir.course_id, self.coursedir.assignment_id, notebook_id, timestamp))

@@ -67,10 +67,8 @@ class ExchangeList(ABCExchangeList, Exchange):
         pass
 
     def parse_assignments(self):
-        if self.coursedir.student_id:
-            courses = self.authenticator.get_student_courses(self.coursedir.student_id)
-        else:
-            courses = None
+        # None means that the student has access to any course that might exist
+        courses = None
 
         assignments = []
         for path in self.assignments:
